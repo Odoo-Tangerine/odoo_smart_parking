@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_user_face_form_view" model="ir.ui.view">
+        <field name="name">spp.user.face.form.view</field>
+        <field name="model">spp.user.face</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="face_binary"/>
+                            <field name="face_encoding"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="spp_user_face_tree_view" model="ir.ui.view">
+        <field name="name">spp.user.face.tree.view</field>
+        <field name="model">spp.user.face</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="user_id"/>
+                <field name="face_binary"/>
+                <field name="face_encoding"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="spp_user_face_action" model="ir.actions.act_window">
+        <field name="name">Faces</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spp.user.face</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('spp_user_face_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('spp_user_face_form_view')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registered Vehicle
+            </p>
+        </field>
+    </record>
+</odoo>

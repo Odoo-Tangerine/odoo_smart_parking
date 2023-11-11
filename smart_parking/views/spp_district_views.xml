@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_district_form_view" model="ir.ui.view">
+        <field name="name">spp.district.form.view</field>
+        <field name="model">spp.district</field>
+        <field name="arch" type="xml">
+            <form string="District" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="province_id"/>
+                            <field name="district_name"/>
+                        </group>
+                        <group>
+                            <field name="district_code"/>
+                            <field name="district_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ward" name="ward">
+                            <field name="ward_ids">
+                                <tree editable="bottom">
+                                    <field name="district_id"/>
+                                    <field name="ward_name"/>
+                                    <field name="ward_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                     <field name="message_follower_ids" widget="mail_followers"/>
+                     <field name="message_ids" colspan="4" widget="mail_thread" nolabel="1"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="spp_district_tree_view" model="ir.ui.view">
+        <field name="name">spp.district.tree.view</field>
+        <field name="model">spp.district</field>
+        <field name="arch" type="xml">
+            <tree string="District" create="0" delete="0">
+                <field name="province_id"/>
+                <field name="district_name"/>
+                <field name="district_code"/>
+                <field name="district_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="spp_district_search_view" model="ir.ui.view">
+        <field name="name">spp.district.search.view</field>
+        <field name="model">spp.district</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="province_id"/>
+                <field name="district_name"/>
+                <field name="district_code"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="spp_district_action" model="ir.actions.act_window">
+        <field name="name">Districts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spp.district</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('spp_district_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('spp_district_form_view')})]"/>
+        <field name="search_view_id" ref="spp_district_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new District.
+            </p>
+        </field>
+    </record>
+</odoo>

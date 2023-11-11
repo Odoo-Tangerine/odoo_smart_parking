@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_spp_province,access_spp_province,model_spp_province,,1,1,1,1
+access_spp_district,access_spp_district,model_spp_district,,1,1,1,1
+access_spp_ward,access_spp_ward,model_spp_ward,,1,1,1,1
+access_spp_api_config,access_spp_api_config,model_spp_api_config,,1,1,1,1
+access_spp_registered_vehicle,access_spp_registered_vehicle,model_spp_registered_vehicle,,1,1,1,1
+access_spp_user_face,access_spp_user_face,model_spp_user_face,,1,1,1,1

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem   id="spp_root"
+                name="Smart Parking"
+                sequence="90"
+    />
+
+    <menuitem   id="spp_registered_vehicle"
+                name="Registered Vehicle"
+                sequence="1"
+                parent="spp_root"
+                action="spp_registered_vehicle_action"
+    />
+
+    <menuitem   id="spp_faces"
+                name="Faces"
+                sequence="2"
+                parent="spp_root"
+                action="spp_user_face_action"
+    />
+
+    <menuitem   id="spp_address"
+                name="Address"
+                sequence="5"
+                parent="spp_root"
+    />
+
+    <menuitem   id="spp_address_province"
+                name="Provinces"
+                sequence="1"
+                parent="spp_address"
+                action="spp_province_action"
+    />
+
+    <menuitem   id="spp_address_district"
+                name="Districts"
+                sequence="10"
+                parent="spp_address"
+                action="spp_district_action"
+    />
+
+    <menuitem   id="spp_address_ward"
+                name="Wards"
+                sequence="20"
+                parent="spp_address"
+                action="spp_ward_action"
+    />
+
+    <menuitem   id="spp_settings"
+                name="Settings"
+                sequence="100"
+                parent="spp_root"
+    />
+
+    <menuitem   id="spp_api_config"
+                name="API Config"
+                sequence="1"
+                parent="spp_settings"
+                action="spp_api_config_action"
+    />
+</odoo>

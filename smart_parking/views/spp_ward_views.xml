@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_ward_form_view" model="ir.ui.view">
+        <field name="name">spp.ward.form.view</field>
+        <field name="model">spp.ward</field>
+        <field name="arch" type="xml">
+            <form string="Ward" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="district_id"/>
+                        <field name="ward_name"/>
+                        <field name="ward_id" invisible="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                     <field name="message_follower_ids" widget="mail_followers"/>
+                     <field name="message_ids" colspan="4" widget="mail_thread" nolabel="1"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="spp_ward_tree_view" model="ir.ui.view">
+        <field name="name">spp.ward.tree.view</field>
+        <field name="model">spp.ward</field>
+        <field name="arch" type="xml">
+            <tree string="Ward" create="0" delete="0">
+                <field name="district_id"/>
+                <field name="ward_name"/>
+                <field name="ward_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="spp_ward_search_view" model="ir.ui.view">
+        <field name="name">spp.ward.search.view</field>
+        <field name="model">spp.ward</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ward_name"/>
+                <field name="district_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="spp_ward_action" model="ir.actions.act_window">
+        <field name="name">Wards</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spp.ward</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('spp_ward_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('spp_ward_form_view')})]"/>
+        <field name="search_view_id" ref="spp_ward_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Ward
+            </p>
+        </field>
+    </record>
+</odoo>

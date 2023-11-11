@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_registered_vehicle_form_view" model="ir.ui.view">
+        <field name="name">spp.registered.vehicle.form.view</field>
+        <field name="model">spp.registered.vehicle</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="license_plate"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="product_id"/>
+                            <field name="invoice_id"/>
+                        </group>
+                        <group>
+                            <field name="is_in_parking_lot"/>
+                            <field name="expire_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                     <field name="message_follower_ids" widget="mail_followers"/>
+                     <field name="message_ids" colspan="4" widget="mail_thread" nolabel="1"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="spp_registered_vehicle_tree_view" model="ir.ui.view">
+        <field name="name">spp.registered.vehicle.tree.view</field>
+        <field name="model">spp.registered.vehicle</field>
+        <field name="arch" type="xml">
+            <tree   decoration-success="state == 'inuse'"
+                    decoration-warning="state == 'almost_expired'"
+                    decoration-danger="state == 'expired'">
+                <field name="user_id"/>
+                <field name="license_plate"/>
+                <field name="invoice_id"/>
+                <field name="product_id"/>
+                <field name="expire_date"/>
+                <field name="state"/>
+                <field name="is_in_parking_lot"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="spp_registered_vehicle_search_view" model="ir.ui.view">
+        <field name="name">spp.registered.vehicle.search.view</field>
+        <field name="model">spp.registered.vehicle</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="license_plate"/>
+                <field name="state"/>
+                <field name="is_in_parking_lot"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="spp_registered_vehicle_action" model="ir.actions.act_window">
+        <field name="name">Registered Vehicle</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spp.registered.vehicle</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('spp_registered_vehicle_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('spp_registered_vehicle_form_view')})]"/>
+        <field name="search_view_id" ref="spp_registered_vehicle_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registered Vehicle
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_api_config_for_viettelpost" model="spp.api.config">
+        <field name="name">Connection with Viettelpost</field>
+        <field name="username">l99store.long@gmail.com</field>
+        <field name="password">i3^akHYa8^@7I70Gi6Ht</field>
+        <field name="host">https://partner.viettelpost.vn</field>
+    </record>
+</odoo>
