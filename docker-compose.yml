@@ -1,0 +1,49 @@
+version: '3'
+services:
+  db:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    networks:
+      - spp-network
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=i3^akHYa8^@7I70Gi6Ht
+      - POSTGRES_USER=tangerine
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./odoo-db-data:/var/lib/postgresql/data/pgdata
+    container_name: spp-postgresql
+    restart: always
+  odoo:
+    image: odoo:16
+    networks:
+      - spp-network
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./odoo-web-data:/var/lib/odoo
+      - ./odoo:/etc/odoo # Odoo config
+      - ./addons:/mnt/extra-addons # Odoo addons
+    container_name: spp-odoo
+    restart: always
+  flask:
+    build:
+      context: .
+      dockerfile: flask_smart_parking/Dockerfile
+    networks:
+      - spp-network
+    depends_on:
+      - odoo
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./flask_smart_parking:/flask_smart_parking
+    container_name: spp-flask
+    restart: always
+
+networks:
+  spp-network:
+    driver: bridge
