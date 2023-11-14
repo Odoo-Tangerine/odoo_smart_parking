@@ -24,6 +24,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="user_id"/>
+                <field name="face_name"/>
                 <field name="face_binary"/>
                 <field name="face_encoding"/>
             </tree>

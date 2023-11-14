@@ -19,6 +19,20 @@
                 action="spp_user_face_action"
     />
 
+    <menuitem   id="spp_vehicle_io_history"
+                name="Vehicle IO History"
+                sequence="3"
+                parent="spp_root"
+                action="spp_vehicle_io_history_action"
+    />
+
+    <menuitem   id="spp_question_answer"
+                name="Q &amp; A"
+                sequence="4"
+                parent="spp_root"
+                action="spp_question_answer_action"
+    />
+
     <menuitem   id="spp_address"
                 name="Address"
                 sequence="5"

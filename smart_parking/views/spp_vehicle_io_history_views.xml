@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_vehicle_io_history_tree_view" model="ir.ui.view">
+        <field name="name">spp.vehicle.io.history.tree.view</field>
+        <field name="model">spp.vehicle.io.history</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="0" edit="0" delete="0">
+                <field name="user_id"/>
+                <field name="license_plate"/>
+                <field name="driver"/>
+                <field name="io_datetime"/>
+                <field name="io_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="spp_vehicle_io_history_action" model="ir.actions.act_window">
+        <field name="name">Vehicle IO History</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spp.vehicle.io.history</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('spp_vehicle_io_history_tree_view')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Vehicle IO Histories
+            </p>
+        </field>
+    </record>
+</odoo>

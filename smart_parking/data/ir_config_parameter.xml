@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_maximum_qty_slot_parking" model="ir.config_parameter">
+        <field name="key">spp.maximum_qty_slot_parking</field>
+        <field name="value">10</field>
+    </record>
+</odoo>

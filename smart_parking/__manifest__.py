@@ -16,6 +16,7 @@
         'security/ir.model.access.csv',
         'data/spp_api_config.xml',
         'data/ir_cron.xml',
+        'data/ir_config_parameter.xml',
         'views/spp_province_views.xml',
         'views/spp_district_views.xml',
         'views/spp_ward_views.xml',
@@ -24,6 +25,8 @@
         'views/spp_product_views.xml',
         'views/spp_registered_vehicle_views.xml',
         'views/spp_user_face_views.xml',
+        'views/spp_vehicle_io_history_views.xml',
+        'views/spp_question_answer_views.xml',
         'views/menus.xml'
     ],
     'license': 'LGPL-3',

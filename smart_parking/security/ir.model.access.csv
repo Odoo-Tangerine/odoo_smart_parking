@@ -5,3 +5,5 @@ access_spp_ward,access_spp_ward,model_spp_ward,,1,1,1,1
 access_spp_api_config,access_spp_api_config,model_spp_api_config,,1,1,1,1
 access_spp_registered_vehicle,access_spp_registered_vehicle,model_spp_registered_vehicle,,1,1,1,1
 access_spp_user_face,access_spp_user_face,model_spp_user_face,,1,1,1,1
+access_spp_vehicle_io_history,access_spp_vehicle_io_history,model_spp_vehicle_io_history,,1,1,1,1
+access_spp_question_anwser,access_spp_question_anwser,model_spp_question_answer,,1,1,1,1

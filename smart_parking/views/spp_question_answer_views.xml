@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="spp_question_answer_tree_view" model="ir.ui.view">
+        <field name="name">spp.question.answer.tree.view</field>
+        <field name="model">spp.question.answer</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="question"/>
+                <field name="answer"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="spp_question_answer_action" model="ir.actions.act_window">
+        <field name="name">Q &amp; A</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">spp.question.answer</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('spp_question_answer_tree_view')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Questions and Answers
+            </p>
+        </field>
+    </record>
+</odoo>
