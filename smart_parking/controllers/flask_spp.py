@@ -11,10 +11,8 @@ from typing import Dict, Any, Optional, List
 from odoo.tools import ustr
 from odoo.http import request, Controller, route
 from werkzeug.wrappers import Request, Response
-from ..common.common_logging import Logging
 
-
-_logger = Logging(filename='odoo.server', exec_name=__name__).get_logger()
+_logger = logging.getLogger(__name__)
 
 
 def response(status: int,
@@ -160,7 +158,7 @@ class FlaskSPP(Controller):
 
     @staticmethod
     def _create_register_vehicle(product_id, user_id, license_plates: List[str]):
-        request.env['spp.registered.vehicle'].sudo().create([{
+        vehicle_id = request.env['spp.registered.vehicle'].sudo().create([{
             'product_id': product_id.id,
             'user_id': user_id.id,
             'license_plate': license_plate,
