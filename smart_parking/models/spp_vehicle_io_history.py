@@ -13,6 +13,5 @@ class SppVehicleIOHistory(models.Model):
     ], string='IO Type', required=True, readonly=True)
     io_datetime = fields.Datetime(string='IO Datetime', default=fields.Datetime.now, readonly=True)
     driver = fields.Char(string='Driver', readonly=True)
-    # device_id = fields.Many2one('spp.device', string='Device', readonly=True)
 
 

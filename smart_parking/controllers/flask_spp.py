@@ -349,22 +349,63 @@ class FlaskSPP(Controller):
                             headers={'Content-Type': 'application/json'})
 
     @staticmethod
-    def _prepare_response_authenticate_in_parking(registered_vehicle_id):
-        face_id = request.env['spp.user.face'].sudo().search([('user_id', '=', registered_vehicle_id.user_id.id)])
+    def _prepare_response_authenticate_in_parking(registered_vehicle_id, name):
         payload = {
             'user_id': registered_vehicle_id.user_id.id,
             'license_plate': registered_vehicle_id.license_plate,
-            'face_encodings': face_id.face_encoding
+            'driver': name
         }
         return payload
+
+    @staticmethod
+    def _face_locations(small_frame):
+        return face_recognition.face_locations(small_frame)
+
+    @staticmethod
+    def _face_encodings(small_frame, locations):
+        return face_recognition.face_encodings(small_frame, locations)
+
+    @staticmethod
+    def _compare_faces(known_face_encodings, face_encoding):
+        return face_recognition.compare_faces(known_face_encodings, face_encoding)
+
+    @staticmethod
+    def _face_distance(known_face_encodings, face_encoding):
+        return face_recognition.face_distance(known_face_encodings, face_encoding)
+
+    @staticmethod
+    def _resize_image_to_1_4(frame):
+        return cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+    def _compare_face(self, face_need_compare, face_sample):
+        face_array = np.frombuffer(face_need_compare, dtype=np.uint8)
+        img_list = cv2.imdecode(face_array, cv2.IMREAD_COLOR)
+        img_list_rgb = cv2.cvtColor(img_list, cv2.COLOR_BGR2RGB)
+        small_frame = self._resize_image_to_1_4(img_list_rgb)
+        face_locations = self._face_locations(small_frame)
+        face_encodings = self._face_encodings(small_frame, face_locations)
+        face_sample_loads = pickle.loads(face_sample)
+        if not face_encodings: return False
+        for face_encoding in face_encodings:
+            # See if the face is a match for the known face(s)
+            matches = self._compare_faces([face_sample_loads[0]], face_encoding)
+            # Or instead, use the known face with the smallest distance to the new face
+            face_distances = self._face_distance([face_sample_loads[0]], face_encoding)
+            best_match_index = np.argmin(face_distances)
+            if matches[best_match_index]:
+                return matches[best_match_index], face_sample_loads[1]
 
     @route('/odoo-api/raspberry/authenticate/in_parking', type='http', auth='public', methods=['POST'], csrf=False)
     def authenticate_in_parking(self):
         try:
             params = request.httprequest.args
             license_plate = params.get('license_plate')
+            bufferer_image = request.httprequest.data
             if not license_plate:
                 return Response(json.dumps(response(status=400, message='License Plate is required.')),
+                                headers={'Content-Type': 'application/json'})
+            elif not bufferer_image:
+                return Response(json.dumps(response(status=400, message='Image is required.')),
                                 headers={'Content-Type': 'application/json'})
             registered_vehicle_id = request.env['spp.registered.vehicle'].sudo().search([
                 ('license_plate', '=', license_plate)
@@ -375,7 +416,12 @@ class FlaskSPP(Controller):
             elif registered_vehicle_id.state == 'expired':
                 return Response(json.dumps(response(status=400, message='Subscription has expired.')),
                                 headers={'Content-Type': 'application/json'})
-            payload = self._prepare_response_authenticate_in_parking(registered_vehicle_id)
+            face_id = request.env['spp.user.face'].sudo().search([('user_id', '=', registered_vehicle_id.user_id.id)])
+            valid, driver = self._compare_face(bufferer_image, face_id.face_encoding)
+            if not valid:
+                return Response(json.dumps(response(status=400, message='The face need compare in valid.')),
+                                headers={'Content-Type': 'application/json'})
+            payload = self._prepare_response_authenticate_in_parking(registered_vehicle_id, driver)
             return Response(json.dumps(response(status=200, message='Successfully.', data=payload)),
                             headers={'Content-Type': 'application/json'})
         except Exception as e:
@@ -386,6 +432,46 @@ class FlaskSPP(Controller):
     def validate_out_parking(self):
         try:
             ...
+        except Exception as e:
+            return Response(json.dumps(response(status=500, message=ustr(e))),
+                            headers={'Content-Type': 'application/json'})
+
+    @route('/odoo-api/raspberry/authenticate/history', type='http', auth='public', methods=['POST'], csrf=False)
+    def history(self):
+        try:
+            params = request.httprequest.args
+            user_id = params.get('user_id')
+            user_name = params.get('user_name')
+            type_auth = params.get('type')
+            license_plate = params.get('license_plate')
+            if not user_id:
+                return Response(json.dumps(response(status=400, message='User id is required.')),
+                                headers={'Content-Type': 'application/json'})
+            elif not user_name:
+                return Response(json.dumps(response(status=400, message='User name is required.')),
+                                headers={'Content-Type': 'application/json'})
+            elif not type_auth:
+                return Response(json.dumps(response(status=400, message='Type is required.')),
+                                headers={'Content-Type': 'application/json'})
+            elif not license_plate:
+                return Response(json.dumps(response(status=400, message='License plate is required.')),
+                                headers={'Content-Type': 'application/json'})
+            user_id = request.env['res.users'].sudo().search([('id', '=', user_id)])
+            if not user_id:
+                return Response(json.dumps(response(status=400, message='User id is not found.')),
+                                headers={'Content-Type': 'application/json'})
+            history_id = request.env['spp.vehicle.io.history'].sudo().create([{
+                'user_id': user_id.id,
+                'license_plate': license_plate,
+                'io_type': type_auth,
+                'io_datetime': datetime.now(),
+                'driver': user_name
+            }])
+            if not history_id:
+                return Response(json.dumps(response(status=500, message='Create history failed.')),
+                                headers={'Content-Type': 'application/json'})
+            return Response(json.dumps(response(status=200, message='Successfully.')),
+                            headers={'Content-Type': 'application/json'})
         except Exception as e:
             return Response(json.dumps(response(status=500, message=ustr(e))),
                             headers={'Content-Type': 'application/json'})
