@@ -375,13 +375,12 @@ class FlaskSPP(Controller):
 
     @staticmethod
     def _resize_image_to_1_4(frame):
-        return cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+        return np.ascontiguousarray(frame[:, :, ::-1])
 
     def _compare_face(self, face_need_compare, face_sample):
         face_array = np.frombuffer(face_need_compare, dtype=np.uint8)
         img_list = cv2.imdecode(face_array, cv2.IMREAD_COLOR)
-        img_list_rgb = cv2.cvtColor(img_list, cv2.COLOR_BGR2RGB)
-        small_frame = self._resize_image_to_1_4(img_list_rgb)
+        small_frame = self._resize_image_to_1_4(img_list)
         face_locations = self._face_locations(small_frame)
         face_encodings = self._face_encodings(small_frame, face_locations)
         face_sample_loads = pickle.loads(face_sample)
@@ -393,9 +392,9 @@ class FlaskSPP(Controller):
             face_distances = self._face_distance([face_sample_loads[0]], face_encoding)
             best_match_index = np.argmin(face_distances)
             if matches[best_match_index]:
-                return matches[best_match_index], face_sample_loads[1]
+                return face_sample_loads[1]
 
-    @route('/odoo-api/raspberry/authenticate/in_parking', type='http', auth='public', methods=['POST'], csrf=False)
+    @route('/odoo-api/raspberry/authenticate', type='http', auth='public', methods=['POST'], csrf=False)
     def authenticate_in_parking(self):
         try:
             params = request.httprequest.args
@@ -417,21 +416,13 @@ class FlaskSPP(Controller):
                 return Response(json.dumps(response(status=400, message='Subscription has expired.')),
                                 headers={'Content-Type': 'application/json'})
             face_id = request.env['spp.user.face'].sudo().search([('user_id', '=', registered_vehicle_id.user_id.id)])
-            valid, driver = self._compare_face(bufferer_image, face_id.face_encoding)
-            if not valid:
+            driver = self._compare_face(bufferer_image, face_id.face_encoding)
+            if not driver:
                 return Response(json.dumps(response(status=400, message='The face need compare in valid.')),
                                 headers={'Content-Type': 'application/json'})
             payload = self._prepare_response_authenticate_in_parking(registered_vehicle_id, driver)
             return Response(json.dumps(response(status=200, message='Successfully.', data=payload)),
                             headers={'Content-Type': 'application/json'})
-        except Exception as e:
-            return Response(json.dumps(response(status=500, message=ustr(e))),
-                            headers={'Content-Type': 'application/json'})
-
-    @route('/odoo-api/raspberry/authenticate/out_parking', type='http', auth='public', methods=['POST'], csrf=False)
-    def validate_out_parking(self):
-        try:
-            ...
         except Exception as e:
             return Response(json.dumps(response(status=500, message=ustr(e))),
                             headers={'Content-Type': 'application/json'})
